@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: unused_import
 import 'episodios/Telalistaepisodios.dart';
 import 'locais/Telalistalocais.dart';
 import 'personagens/telalistapersonagens.dart';
@@ -23,7 +24,7 @@ class Home extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           title: const Text("Aplicativo do Rick & Morty"),
-        ),                                                                                                                                                                                                                                                                                                
+        ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment
@@ -36,9 +37,9 @@ class Home extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                           builder: (context) => Telalistapersonagens()));
-                },                                                                                                                                                      
+                },
                 child: Column(
-                  children: [                                   
+                  children: [
                     Image.asset(
                       "images/characters.png",
                       width: 120,
