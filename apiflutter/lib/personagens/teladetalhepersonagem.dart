@@ -44,7 +44,7 @@ class TelaDetalhePersonagem extends StatelessWidget {
     // debugPrint(personagem.episode[1].toString());
     return Scaffold(
       appBar: AppBar(
-        title: Text("Detalhes do Personagem"),
+        title: Text("Detalhes do Personagem: " + personagem.name),
       ),
       body: SingleChildScrollView(
         child: Column(

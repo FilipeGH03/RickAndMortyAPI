@@ -72,7 +72,7 @@ class Home extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Telalistalocais(),
+                        builder: (context) => Telalistaepisodios(),
                       ));
                 },
                 child: Column(children: [

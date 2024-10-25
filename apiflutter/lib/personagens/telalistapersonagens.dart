@@ -7,17 +7,33 @@ import 'package:http/http.dart' as http;
 import '../model/personagem.dart';
 import 'teladetalhepersonagem.dart';
 
-class Telalistapersonagens extends StatelessWidget {
+class Telalistapersonagens extends StatefulWidget {
   const Telalistapersonagens({super.key});
 
-  Future<List<Personagem>> pageData() async {
-    final response = await http.Client()
-        .get(Uri.parse("https://rickandmortyapi.com/api/character"));
+  @override
+  State<Telalistapersonagens> createState() => _TelalistapersonagensState();
+}
+
+class _TelalistapersonagensState extends State<Telalistapersonagens> {
+  bool isloading = false;
+  ScrollController posicaocontroller = ScrollController();
+  int pagina=1;
+  List<Personagem> todosPersonagens = [];
+  int paginamaior = 9999999;
+
+  Future<List<Personagem>> pageData(int page) async {
+    debugPrint("estou chamando $page");
+    if (!isloading){
+      isloading = true;
+      final response = await http.Client()
+        .get(Uri.parse("https://rickandmortyapi.com/api/character?page=$page"));
 
     if (response.statusCode == 200) {
       var dados = json.decode(response.body);
       List dados_result = dados['results'] as List;
-      List<Personagem> todosPersonagens = [];
+      paginamaior = dados['info']['pages'];
+      // paginamaior = int
+
       dados_result.forEach(
         (personagem) {
           // debugPrint("Dados: $personagem");
@@ -34,30 +50,46 @@ class Telalistapersonagens extends StatelessWidget {
               created: personagem['created']);
 
           todosPersonagens.add(p);
+
         },
       );
-      return todosPersonagens;
+      pagina ++;
+      isloading = false;
     } else {
-      debugPrint("Deu erro na conexão.");
+      debugPrint("Deu erro na conexão.");  
+      return [];
     }
-    return [];
+  
+    }
+    return todosPersonagens;
   }
 
   @override
   Widget build(BuildContext context) {
+    posicaocontroller.addListener(() {
+      if(posicaocontroller.position.pixels >= posicaocontroller.position.maxScrollExtent * 0.7 && pagina < paginamaior+1){
+    
+        setState(() {
+          pageData(pagina);
+        });
+      }
+    },);
+    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Lista de Personagens"),
       ),
       body: FutureBuilder(
-          future: pageData(),
+          future: pageData(pagina),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return Text("Não há dados para exibir");
+              return const Text("Não há dados para exibir");
             } else {
               List<Personagem> listaPersonagens =
                   snapshot.data as List<Personagem>;
               return ListView.builder(
+                  controller: posicaocontroller,
                   itemCount: listaPersonagens.length,
                   itemBuilder: (context, index) {
                     Color cor = Colors.green;
